@@ -1,0 +1,177 @@
+Vireak Both, [5/8/2025 8:21 AM]
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Search Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .search-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        input[type="text"], input[type="number"] {
+            padding: 8px;
+            width: 300px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .field-selector {
+            margin-top: 10px;
+        }
+        .field-checkbox {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Advanced Search</h1>
+    
+    <div class="search-container">
+        <p>When using the searching method, you can specify which columns it should take under consideration. By default, searching will apply to all columns.</p>
+        
+        <div>
+            <input type="text" id="searchInput" placeholder="Search term...">
+            <button onclick="performSearch()">Search</button>
+        </div>
+        
+        <div class="field-selector">
+            <strong>Search in fields:</strong><br>
+            <label class="field-checkbox"><input type="checkbox" name="searchField" value="Name" checked> Name</label>
+            <label class="field-checkbox"><input type="checkbox" name="searchField" value="Position" checked> Position</label>
+            <label class="field-checkbox"><input type="checkbox" name="searchField" value="Office" checked> Office</label>
+            <label class="field-checkbox"><input type="checkbox" name="searchField" value="Age" checked> Age</label>
+            <label class="field-checkbox"><input type="checkbox" name="searchField" value="Start date" checked> Start date</label>
+            <label class="field-checkbox"><input type="checkbox" name="searchField" value="Salary" checked> Salary</label>
+        </div>
+    </div>
+    
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Data will be inserted here by JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        // Sample data
+        const data = [
+            { Name: "Tiger Nixon", Position: "System Architect", Office: "Edinburgh", Age: 61, "Start date": "2011/04/25", Salary: "$320,800" },
+            { Name: "Garrett Winters", Position: "Accountant", Office: "Tokyo", Age: 63, "Start date": "2011/07/25", Salary: "$170,750" },
+            { Name: "Ashton Cox", Position: "Junior Technical Author", Office: "San Francisco", Age: 66, "Start date": "2009/01/12", Salary: "$86,000" },
+            { Name: "Cedric Kelly", Position: "Senior Javascript Developer", Office: "Edinburgh", Age: 22, "Start date": "2012/03/29", Salary: "$433,060" },
+            { Name: "Airi Satou", Position: "Accountant", Office: "Tokyo", Age: 33, "Start date": "2008/11/28", Salary: "$162,700" },
+{ Name: "Brielle Williamson", Position: "Integration Specialist", Office: "New York", Age: 61, "Start date": "2012/12/02", Salary: "$372,000" },
+            { Name: "Herrod Chandler", Position: "Sales Assistant", Office: "San Francisco", Age: 59, "Start date": "2012/08/06", Salary: "$137,500" }
+        ];
+
+        // Initialize the table with all data
+        function initializeTable() {
+            const tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = "";
+            
+            data.forEach(row => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${row.Name}</td>
+                    <td>${row.Position}</td>
+                    <td>${row.Office}</td>
+                    <td>${row.Age}</td>
+                    <td>${row["Start date"]}</td>
+                    <td>${row.Salary}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Advanced search function
+        function advancedSearch(data, searchTerm, fields = null) {
+            if (!searchTerm) return data;
+            
+            const searchFields = fields || Object.keys(data[0]);
+            
+            return data.filter(item => {
+                return searchFields.some(key => {
+                    const value = String(item[key]).toLowerCase();
+                    return value.includes(searchTerm.toLowerCase());
+                });
+            });
+        }
+
+        // Get selected fields for search
+        function getSelectedFields() {
+            const checkboxes = document.querySelectorAll('input[name="searchField"]:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        // Perform the search and update the table
+        function performSearch() {
+            const searchTerm = document.getElementById("searchInput").value;
+            const selectedFields = getSelectedFields();
+            const filteredData = advancedSearch(data, searchTerm, selectedFields);
+            
+            const tableBody = document.getElementById("tableBody");
+            tableBody.innerHTML = "";
+            
+            filteredData.forEach(row => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${row.Name}</td>
+                    <td>${row.Position}</td>
+                    <td>${row.Office}</td>
+                    <td>${row.Age}</td>
+                    <td>${row["Start date"]}</td>
+                    <td>${row.Salary}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Initialize the table when the page loads
+        window.onload = initializeTable;
+    </script>
+</body>
+</html>
